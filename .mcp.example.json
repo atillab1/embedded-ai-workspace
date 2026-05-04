@@ -1,0 +1,19 @@
+{
+  "_comment": "Copy this file to .mcp.json (which is gitignored) and replace ABS_PATH with the absolute path to your local clone. Example: 'C:/Users/you/work/embedded-ai-workspace' on Windows or '/home/you/embedded-ai-workspace' on Linux.",
+  "mcpServers": {
+    "datasheet": {
+      "command": "npx",
+      "args": [
+        "tsx",
+        "ABS_PATH/datasheet-mcp/src/index.ts"
+      ]
+    },
+    "serial": {
+      "command": "npx",
+      "args": [
+        "tsx",
+        "ABS_PATH/serial-mcp/src/index.ts"
+      ]
+    }
+  }
+}

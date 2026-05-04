@@ -1,0 +1,107 @@
+name: HIL pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "firmware-test/**"
+      - "hil-runner/**"
+      - ".github/workflows/hil.yml"
+  pull_request:
+    paths:
+      - "firmware-test/**"
+      - "hil-runner/**"
+  workflow_dispatch: {}
+
+# Two-stage pipeline:
+#  - "lint" runs on GitHub-hosted runners: build, MISRA, smoke tests of MCP servers
+#  - "hil"  runs on the self-hosted runner with the STM32F4-DISCOVERY attached
+jobs:
+  lint:
+    name: Build firmware + smoke MCP servers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ARM GCC
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-arm-none-eabi make
+
+      - name: Build firmware
+        working-directory: firmware-test
+        # NB: the CubeMX-generated Makefile is required. If absent in the repo,
+        # this step fails fast — that's intentional, the user is expected to
+        # commit the Makefile after their first generation.
+        run: |
+          if [ ! -f Makefile ]; then
+            echo "::error::firmware-test/Makefile missing — generate via CubeMX first"
+            exit 1
+          fi
+          make -j
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Smoke datasheet-mcp
+        working-directory: datasheet-mcp
+        # Skipping ingest because LFS/PDF not part of CI checkout.
+        # We just type-check + load tools (search will error since DB not built).
+        run: |
+          npm ci
+          npx tsc --noEmit
+
+      - name: Smoke serial-mcp
+        working-directory: serial-mcp
+        run: |
+          npm ci
+          npx tsc --noEmit
+          npm run smoke || true   # no port available on hosted runner; smoke is informational
+
+      - name: Smoke hil-runner
+        working-directory: hil-runner
+        run: |
+          npm ci
+          npx tsc --noEmit
+          # self-test exits 0 when failure path works correctly
+          npm run self-test
+
+  hil:
+    name: Run HIL tests on attached board
+    needs: lint
+    runs-on: [self-hosted, stm32f4-disco]   # <-- runner labels
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build firmware
+        working-directory: firmware-test
+        run: make -j
+
+      - name: Install hil-runner deps
+        working-directory: hil-runner
+        run: npm ci
+
+      - name: Flash + run HIL plan
+        working-directory: hil-runner
+        env:
+          # The runner's environment must already have st-flash on PATH
+          # and the user must be in the dialout group (Linux) / have COM port
+          # access (Windows).
+          PATH: ${{ env.PATH }}
+        run: npx tsx src/index.ts ../firmware-test/tests/plan.json
+
+      - name: Upload JUnit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hil-results
+          path: hil-runner/hil-results.xml
+
+      - name: Publish JUnit summary
+        if: always()
+        uses: mikepenz/action-junit-report@v4
+        with:
+          report_paths: hil-runner/hil-results.xml

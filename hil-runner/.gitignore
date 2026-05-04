@@ -1,0 +1,4 @@
+node_modules/
+dist/
+hil-results.xml
+*.log

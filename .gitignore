@@ -1,0 +1,37 @@
+# --- User-specific MCP wiring (paths differ per machine) ---
+.mcp.json
+
+# --- Claude Code session state (PRIVATE — your conversation transcripts!) ---
+.claude/projects/
+.claude/statsig/
+.claude/todos/
+.claude/shell-snapshots/
+# keep only memory/CLAUDE.md if you intentionally want to track your project notes;
+# everything else under .claude/ stays local
+.claude/*.json
+.claude/*.jsonl
+
+# --- Secrets ---
+.env
+.env.local
+*.pem
+*.key
+
+# --- Per-user test plan (binary path is machine-specific) ---
+firmware-test/tests/plan.json
+*.local.json
+*.bak
+
+# --- Build / runtime artefacts ---
+node_modules/
+dist/
+build/
+*.log
+hil-results.xml
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

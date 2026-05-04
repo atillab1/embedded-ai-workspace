@@ -1,0 +1,16 @@
+{
+  "_comment": "Copy this to plan.json (gitignored) and replace 'binary' with the absolute path to your built firmware .bin. Find your COM port with: cd ../../hil-runner && npx tsx src/index.ts --list-ports",
+  "binary": "<ABSOLUTE_PATH_TO>/firmware-test.bin",
+  "flasher": "st-flash",
+  "flashLoadAddress": "0x08000000",
+  "port": "COM5",
+  "baud": 115200,
+  "resetDelayMs": 500,
+  "cases": [
+    { "name": "ping_pong",    "send": "ping\n",      "expect": "pong",           "timeoutMs": 1000, "delayAfterMs": 1500 },
+    { "name": "led_on_ok",    "send": "led on\n",    "expect": "OK",             "timeoutMs": 1000, "delayAfterMs": 4000 },
+    { "name": "led_off_ok",   "send": "led off\n",   "expect": "OK",             "timeoutMs": 1000, "delayAfterMs": 4000 },
+    { "name": "version_str",  "send": "version\n",   "expect": "FW \\d+\\.\\d+", "timeoutMs": 1000, "delayAfterMs": 1500 },
+    { "name": "unknown_err",  "send": "noop\n",      "expect": "ERR unknown",    "timeoutMs": 1000 }
+  ]
+}

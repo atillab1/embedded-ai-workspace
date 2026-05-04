@@ -1,0 +1,15 @@
+{
+  "binary": "../firmware-test/build/firmware-test.bin",
+  "flasher": "st-flash",
+  "flashLoadAddress": "0x08000000",
+  "port": "COM7",
+  "baud": 115200,
+  "resetDelayMs": 500,
+  "cases": [
+    { "name": "boot_banner",  "send": "",            "expect": "FW \\d+\\.\\d+ ready", "timeoutMs": 3000 },
+    { "name": "ping_pong",    "send": "ping\n",      "expect": "pong",                  "timeoutMs": 1000 },
+    { "name": "led_on",       "send": "led on\n",    "expect": "OK",                    "timeoutMs": 1000 },
+    { "name": "led_off",      "send": "led off\n",   "expect": "OK",                    "timeoutMs": 1000 },
+    { "name": "version",      "send": "version\n",   "expect": "FW \\d+\\.\\d+",        "timeoutMs": 1000 }
+  ]
+}

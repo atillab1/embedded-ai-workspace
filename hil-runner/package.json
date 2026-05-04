@@ -1,0 +1,21 @@
+{
+  "name": "hil-runner",
+  "version": "0.1.0",
+  "description": "Hardware-in-the-loop test runner: flash STM32 + drive UART tests",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "self-test": "tsx src/index.ts --self-test"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "serialport": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}
