@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1200, initial-scale=1, viewport-fit=cover" />
+<title>MCP & Skill — Atilla Basut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    color-scheme: light only;
+    --paper: #f4efe6;
+    --paper-2: #ebe4d6;
+    --ink: #1a1612;
+    --ink-soft: #2d2722;
+    --muted: #6b6259;
+    --rule: #1a1612;
+    --accent: #8b1a1a;       /* burgundy */
+    --accent-soft: #c44545;
+    --gold: #b8924a;
+    --user: #2d4a3e;         /* deep green */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { color-scheme: light only; }
+  html, body {
+    background: #2a2520;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 900px) {
+    body { padding: 0; background: var(--paper); }
+    .page { box-shadow: none !important; }
+  }
+
+  .page {
+    width: 1200px;
+    min-height: 1500px;
+    background: var(--paper);
+    position: relative;
+    padding: 64px 72px 80px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(139,26,26,0.025) 0%, transparent 50%),
+      radial-gradient(circle at 80% 90%, rgba(184,146,74,0.04) 0%, transparent 50%);
+  }
+
+  /* paper grain */
+  .page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(26,22,18,0.012) 0 1px, transparent 1px 3px);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+
+  /* ============ HEADER ============ */
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--ink);
+    position: relative;
+  }
+  .masthead::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -6px;
+    height: 1px;
+    background: var(--ink);
+  }
+
+  .issue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .issue strong { color: var(--ink); font-weight: 600; }
+
+  .mast-right {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .mast-right .name {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    text-transform: none;
+    font-size: 18px;
+    letter-spacing: 0;
+    color: var(--ink);
+    margin-top: 4px;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    padding: 56px 0 44px;
+    text-align: center;
+    border-bottom: 1px solid rgba(26,22,18,0.2);
+  }
+
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .kicker::before, .kicker::after {
+    content: '';
+    width: 32px; height: 1px; background: var(--accent);
+  }
+
+  h1.title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 124px;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  h1.title .amp {
+    font-style: italic;
+    color: var(--accent);
+    font-size: 130px;
+    margin: 0 6px;
+  }
+
+  .deck {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--muted);
+    max-width: 760px;
+    margin: 16px auto 0;
+    line-height: 1.4;
+  }
+
+  .byline {
+    margin-top: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ============ SECTION ============ */
+  section {
+    padding: 56px 0;
+    border-bottom: 1px solid rgba(26,22,18,0.18);
+  }
+  section:last-of-type { border-bottom: 0; }
+
+  .sec-head {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    align-items: baseline;
+    margin-bottom: 36px;
+  }
+  .sec-num {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 56px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .sec-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 48px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .sec-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* ============ LAYERED ARCHITECTURE ============ */
+  .arch {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .layer {
+    position: relative;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    padding: 20px 28px;
+    display: grid;
+    grid-template-columns: 180px 1fr 200px;
+    gap: 24px;
+    align-items: center;
+  }
+  .layer.deep1 { background: #ede6d6; margin: 0 0px; }
+  .layer.deep2 { background: #e4dcc8; margin: 0 24px; }
+  .layer.deep3 { background: #d9cfb7; margin: 0 48px; }
+  .layer.deep4 { background: #cec3a6; margin: 0 72px; }
+  .layer.deep5 { background: #c1b591; margin: 0 96px; color: var(--ink); }
+
+  .layer-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .layer-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 30px;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .layer-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .layer-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .layer-tag {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .layer-tag .pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .arrow-down {
+    text-align: center;
+    color: var(--accent);
+    font-size: 18px;
+    font-family: 'Instrument Serif', serif;
+    margin: -2px 0;
+    height: 12px;
+    line-height: 12px;
+  }
+
+  /* ============ DEFINITION CARDS (MCP / Skill) ============ */
+  .duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+  }
+  .def {
+    padding: 32px 32px 36px;
+    position: relative;
+  }
+  .def + .def {
+    border-left: 1px solid var(--ink);
+  }
+  .def-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .def-tag .index {
+    color: var(--muted);
+  }
+  .def-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .def-expand {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(26,22,18,0.2);
+    padding-bottom: 20px;
+  }
+  .def-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .def-row .k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 3px;
+  }
+  .def-row .v strong { color: var(--ink); font-weight: 600; }
+
+  .analogy {
+    margin-top: 22px;
+    padding: 18px 20px;
+    background: var(--paper-2);
+    border-left: 3px solid var(--accent);
+  }
+  .analogy .lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .analogy .txt {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+
+  /* ============ COMPARISON TABLE ============ */
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+  }
+  .table th, .table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(26,22,18,0.18);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--paper-2);
+    font-weight: 500;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .table th:first-child { width: 180px; }
+  .table tr:last-child td { border-bottom: 0; }
+  .table .col-mcp { background: rgba(139,26,26,0.04); }
+  .table .col-skill { background: rgba(184,146,74,0.06); }
+  .table .label-cell {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .table strong { color: var(--ink); font-weight: 600; }
+  .badge-mcp, .badge-skill {
+    display: inline-block;
+    padding: 3px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+  }
+  .badge-mcp { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+  .badge-skill { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+
+  /* ============ EXAMPLE FLOW ============ */
+  .case-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(26,22,18,0.2);
+  }
+  .case-head .lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .case-head .name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 32px;
+    color: var(--ink);
+    font-style: italic;
+  }
+  .case-head .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    position: relative;
+  }
+  .step {
+    padding: 22px 18px 24px;
+    border-right: 1px solid rgba(26,22,18,0.18);
+    position: relative;
+  }
+  .step:last-child { border-right: 0; }
+  .step .num {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .step .actor {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .step .actor.user { color: var(--user); }
+  .step .actor.skill { color: var(--gold); }
+  .step .actor.mcp { color: var(--accent); }
+  .step .actor.claude { color: var(--ink); }
+  .step .what {
+    font-family: 'Instrument Serif', serif;
+    font-size: 19px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .step .detail {
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .case-result {
+    margin-top: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .case-result .lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .case-result .body {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+  }
+
+  .case-pieces {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .piece {
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    padding: 20px 22px;
+    position: relative;
+  }
+  .piece .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .piece .role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .piece.skill .role { color: var(--gold); }
+  .piece.mcp .role { color: var(--accent); }
+  .piece .nm {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .piece .nm em { font-style: italic; }
+  .piece .desc {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .piece .stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .piece.skill .stripe { background: var(--gold); }
+  .piece.mcp .stripe { background: var(--accent); }
+
+  /* ============ FOOTER ============ */
+  .colophon {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .colophon .sig {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .colophon .sig strong { font-weight: 400; }
+
+  /* small dot ornament */
+  .ornament {
+    text-align: center;
+    color: var(--accent);
+    margin: 0 0 8px;
+    letter-spacing: 0.5em;
+    font-size: 14px;
+  }
+
+  /* mini icon helpers - drawn with CSS where useful */
+  .ico {
+    width: 36px; height: 36px;
+    border: 1.5px solid currentColor;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ========== MASTHEAD ========== -->
+    <header class="masthead">
+      <div class="issue">
+        <strong>Vol. 01</strong> &nbsp;·&nbsp; <strong>2026</strong>
+      </div>
+      <div class="mast-right">
+        a technical primer
+        <div class="name">by Atilla Basut</div>
+      </div>
+    </header>
+
+    <!-- ========== HERO ========== -->
+    <div class="hero">
+      <div class="kicker">MCP &amp; Skill — Açıklamalı</div>
+      <h1 class="title">MCP <span class="amp">&amp;</span> Skill</h1>
+      <p class="deck">
+        Claude'a yeni yetenekler kazandırmanın iki yolu —
+        biri <em style="color:var(--accent);font-style:italic">dış dünyaya bağlar</em>,
+        diğeri <em style="color:var(--gold);font-style:italic">nasıl davranacağını öğretir.</em>
+      </p>
+      <div class="byline">Mimari · Karşılaştırma · Gerçek Bir Örnek</div>
+    </div>
+
+    <!-- ========== SECTION 1: ECOSYSTEM ========== -->
+    <section>
+      <div class="sec-head">
+        <div class="sec-num">I.</div>
+        <div>
+          <div class="sec-title">Ekosistem içinde nereye oturuyorlar</div>
+          <div class="sec-sub">User → Claude → Skill · MCP → External Resources</div>
+        </div>
+      </div>
+
+      <div class="arch">
+        <div class="layer">
+          <div>
+            <div class="layer-label">Layer 01 — Person</div>
+            <div class="layer-name">Kullanıcı</div>
+          </div>
+          <div class="layer-desc">Bir görev tanımlar: "Şu kodu MISRA C kurallarına göre incele." Niyet buradan başlar.</div>
+          <div class="layer-tag"><span class="pill">INTENT</span></div>
+        </div>
+
+        <div class="arrow-down">▼</div>
+
+        <div class="layer deep1">
+          <div>
+            <div class="layer-label">Layer 02 — Model</div>
+            <div class="layer-name">Claude</div>
+          </div>
+          <div class="layer-desc">Akıl yürütür ve planlar, ama tek başına dosya okuyamaz, datasheet açamaz, harici araç çağıramaz.</div>
+          <div class="layer-tag"><span class="pill">REASONING</span></div>
+        </div>
+
+        <div class="arrow-down">▼</div>
+
+        <div class="layer deep2">
+          <div>
+            <div class="layer-label">Layer 03 — Behavior</div>
+            <div class="layer-name"><em>Skill</em></div>
+          </div>
+          <div class="layer-desc">Claude'a "bu işi şöyle yap" diyen talimat paketi. Uzmanlık, kurallar, kontrol listeleri, tarz.</div>
+          <div class="layer-tag"><span class="pill">KNOW-HOW</span></div>
+        </div>
+
+        <div class="arrow-down">▼</div>
+
+        <div class="layer deep3">
+          <div>
+            <div class="layer-label">Layer 04 — Bridge</div>
+            <div class="layer-name"><em>MCP Server</em></div>
+          </div>
+          <div class="layer-desc">Claude ile dış sistemler arasındaki standart köprü. Tool, resource ve prompt sunar.</div>
+          <div class="layer-tag"><span class="pill">PROTOCOL</span></div>
+        </div>
+
+        <div class="arrow-down">▼</div>
+
+        <div class="layer deep4">
+          <div>
+            <div class="layer-label">Layer 05 — World</div>
+            <div class="layer-name">Datasheet · Dosya · API</div>
+          </div>
+          <div class="layer-desc">Claude'un ulaşmak istediği gerçek dünya: PDF dökümanlar, veritabanları, kod tabanı, servisler.</div>
+          <div class="layer-tag"><span class="pill">DATA</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SECTION 2: DEFINITIONS ========== -->
+    <section>
+      <div class="sec-head">
+        <div class="sec-num">II.</div>
+        <div>
+          <div class="sec-title">İki kavram, iki farklı amaç</div>
+          <div class="sec-sub">Tanım · İşleyiş · Analoji</div>
+        </div>
+      </div>
+
+      <div class="duo">
+        <!-- MCP -->
+        <div class="def">
+          <div class="def-tag">
+            <span>Model Context Protocol</span>
+            <span class="index">— A</span>
+          </div>
+          <div class="def-name">MCP Server</div>
+          <div class="def-expand">Claude'u dış dünyaya bağlayan standart bir konektör.</div>
+
+          <div class="def-row">
+            <div class="k">Ne yapar</div>
+            <div class="v">Claude'a <strong>tool</strong>, <strong>resource</strong> ve <strong>prompt</strong> sunar; modelin kendi başına ulaşamayacağı dosya, veri ve servisleri erişilebilir kılar.</div>
+          </div>
+          <div class="def-row">
+            <div class="k">Yapısı</div>
+            <div class="v">Bağımsız çalışan bir <strong>process</strong>. JSON-RPC üzerinden konuşur. Aynı server birden fazla istemciye servis verebilir.</div>
+          </div>
+          <div class="def-row">
+            <div class="k">Sınırı</div>
+            <div class="v">Sadece <strong>kapasite</strong> verir; Claude'un bu kapasiteyi nasıl kullanacağına karışmaz.</div>
+          </div>
+
+          <div class="analogy">
+            <div class="lab">— Analoji</div>
+            <div class="txt">"USB-C portu gibi. Hangi cihazı takarsan tak, aynı protokolle konuşur. MCP de Claude'a takılan standart bir uçtur."</div>
+          </div>
+        </div>
+
+        <!-- SKILL -->
+        <div class="def">
+          <div class="def-tag">
+            <span>Behavioral Instruction Set</span>
+            <span class="index">— B</span>
+          </div>
+          <div class="def-name">Skill</div>
+          <div class="def-expand">Claude'a belirli bir konuda <em>nasıl</em> davranacağını öğreten talimat paketi.</div>
+
+          <div class="def-row">
+            <div class="k">Ne yapar</div>
+            <div class="v">Bir <strong>uzmanlık alanını</strong> tarif eder: hangi kurallar geçerli, hangi adımları takip et, çıktı nasıl olmalı, neyi atla.</div>
+          </div>
+          <div class="def-row">
+            <div class="k">Yapısı</div>
+            <div class="v">Markdown <strong>SKILL.md</strong> + opsiyonel referans dosyaları. Konu açıldığında Claude bunu yükler ve yönergeyi izler.</div>
+          </div>
+          <div class="def-row">
+            <div class="k">Sınırı</div>
+            <div class="v">Sadece <strong>davranış</strong> tanımlar; harici sistemlere kendi başına ulaşamaz — bunun için MCP'ye veya araçlara güvenir.</div>
+          </div>
+
+          <div class="analogy">
+            <div class="lab">— Analoji</div>
+            <div class="txt">"Yeni bir mühendise verilen onboarding klasörü gibi. Şirket kuralları, kontrol listeleri, 'biz burada şöyle yaparız' dökümanı."</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SECTION 3: COMPARISON ========== -->
+    <section>
+      <div class="sec-head">
+        <div class="sec-num">III.</div>
+        <div>
+          <div class="sec-title">Yan yana koyduğumuzda</div>
+          <div class="sec-sub">MCP vs Skill — Pratik bir karşılaştırma</div>
+        </div>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th><span class="badge-mcp">MCP</span></th>
+            <th><span class="badge-skill">Skill</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">Cevapladığı soru</td>
+            <td class="col-mcp">Claude <strong>neye erişebilir?</strong></td>
+            <td class="col-skill">Claude <strong>nasıl davranmalı?</strong></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Doğası</td>
+            <td class="col-mcp">Çalışan bir <strong>servis</strong> / process</td>
+            <td class="col-skill">Statik <strong>talimat</strong> dökümanı</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Sağladığı şey</td>
+            <td class="col-mcp">Tool · Resource · Prompt</td>
+            <td class="col-skill">Kural · Süreç · Tarz</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Kim yazar</td>
+            <td class="col-mcp">Geliştirici (Python, TS, vb.)</td>
+            <td class="col-skill">Domain uzmanı (Markdown ile)</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Ne zaman tercih edilir</td>
+            <td class="col-mcp">Dış veri, dosya, API gerektiğinde</td>
+            <td class="col-skill">Tutarlı uzmanlık, metodoloji gerektiğinde</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Birlikte kullanım</td>
+            <td class="col-mcp" colspan="2"><strong>En güçlü hali budur:</strong> Skill <em>nasıl</em>'ı söyler, MCP gerekli <em>materyali</em> getirir. İkisi birlikte sağlam bir uzmanlık ajanı oluşturur.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ========== SECTION 4: REAL EXAMPLE ========== -->
+    <section>
+      <div class="sec-head">
+        <div class="sec-num">IV.</div>
+        <div>
+          <div class="sec-title">Bir gerçek örnek: MISRA C Reviewer</div>
+          <div class="sec-sub">Skill ve MCP'nin birlikte çalıştığı bir senaryo</div>
+        </div>
+      </div>
+
+      <div class="case-pieces">
+        <div class="piece skill">
+          <div class="stripe"></div>
+          <div class="top">
+            <div class="role">Skill —</div>
+          </div>
+          <div class="nm"><em>MISRA C Reviewer</em></div>
+          <div class="desc">
+            Embedded C kodunu MISRA kurallarına göre denetlemeyi bilen davranış paketi. Hangi rule'a bakılır, ihlal nasıl raporlanır, hangi sırayla incelenir — hepsi burada tanımlı.
+          </div>
+        </div>
+        <div class="piece mcp">
+          <div class="stripe"></div>
+          <div class="top">
+            <div class="role">MCP Server —</div>
+          </div>
+          <div class="nm">Datasheet &amp; Manual <em>Reference</em></div>
+          <div class="desc">
+            Kullanıcının yüklediği MCU datasheet'lerini ve referans manuel'larını Claude'a açar. Skill ihtiyaç duyduğunda doğru sayfayı, doğru registeri, doğru pin tanımını oradan çeker.
+          </div>
+        </div>
+      </div>
+
+      <div class="case-head">
+        <div class="lab">— İş akışı</div>
+        <div class="name">Beş adımda denetim süreci</div>
+        <div class="meta">Workflow<br/>Step-by-step</div>
+      </div>
+
+      <div class="flow">
+        <div class="step">
+          <div class="num">01</div>
+          <div class="actor user">Kullanıcı</div>
+          <div class="what">Kodu &amp; datasheet'i yükler</div>
+          <div class="detail">"STM32 için yazdığım bu sürücüyü MISRA'ya göre incele."</div>
+        </div>
+        <div class="step">
+          <div class="num">02</div>
+          <div class="actor claude">Claude</div>
+          <div class="what">Skill'i devreye alır</div>
+          <div class="detail">MISRA C Reviewer talimatlarını okur, denetim planını çıkarır.</div>
+        </div>
+        <div class="step">
+          <div class="num">03</div>
+          <div class="actor mcp">MCP</div>
+          <div class="what">Referansı sağlar</div>
+          <div class="detail">İlgili register, timing veya pin bilgisini datasheet'ten Claude'a getirir.</div>
+        </div>
+        <div class="step">
+          <div class="num">04</div>
+          <div class="actor skill">Skill</div>
+          <div class="what">Kuralla eşleştirir</div>
+          <div class="detail">Kod + datasheet bilgisini MISRA rule setiyle karşılaştırır, ihlali tespit eder.</div>
+        </div>
+        <div class="step">
+          <div class="num">05</div>
+          <div class="actor claude">Claude</div>
+          <div class="what">Raporu yazar</div>
+          <div class="detail">İhlal · gerekçe · datasheet referansı · önerilen düzeltme.</div>
+        </div>
+      </div>
+
+      <div class="case-result">
+        <div class="lab">Sonuç —</div>
+        <div class="body">Sadece bir kural ihlali listesi değil; <em>hangi register'a, hangi datasheet sayfasına ve hangi MISRA kuralına</em> dayanarak gerekçelendirilmiş, izlenebilir bir denetim raporu.</div>
+      </div>
+    </section>
+
+    <!-- ========== COLOPHON ========== -->
+    <footer class="colophon">
+      <div>MCP &amp; Skill · Vol. 01</div>
+      <div class="ornament">· · ·</div>
+      <div class="sig"><strong>—</strong> <em>Atilla Basut</em></div>
+    </footer>
+
+  </div>
+</body>
+</html>
